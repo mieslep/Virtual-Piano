@@ -37,8 +37,7 @@ public class Piano extends JPanel {
 	private static final int MAX_BASE_PITCH = 216;
 
 	private List<PianoKey> pianoKeys;
-	private Pedal pedal;
-	
+
 	// of the Piano JPanel
 	private int width;
 	private int height;
@@ -55,7 +54,6 @@ public class Piano extends JPanel {
 	 */
 	public Piano() {
 		createKeys();		
-		createPedal();
 		initKeyMap();
 		
 		// width already assigned in createKeys()
@@ -152,25 +150,9 @@ public class Piano extends JPanel {
 	}
 
 	/**
-	 * Create and initializes the pedal and registers a listener.  Populates
-	 * pedalPos.
-	 */
-	private void createPedal() {
-		pedal = new Pedal();
-
-		// register listener
-		pedal.addListener(new PianoPedalListener());
-		
-		// we can assume that Piano width is already determined
-		pedalPos = new Point((width - LayoutConstant.pedalWidth) / 2,
-							  LayoutConstant.keyFrameHeight + LayoutConstant.pedalPadding);
-	}
-	
-	/**
 	 * Stops all currently playing notes (through set down).
 	 */
 	public void reset() {
-		pedal.setDown(false);
 		for (PianoKey pianoKey: pianoKeys) {
 			pianoKey.setDown(false);
 		}
@@ -234,10 +216,7 @@ public class Piano extends JPanel {
 		// background
 		g.setColor(LayoutConstant.pianoBackgroundColor);
 		g.fillRect(0, LayoutConstant.keyFrameHeight, width, LayoutConstant.pedalAreaHeight);
-		
-		// pedal
-		g.drawImage(pedal.getImage(), pedalPos.x, pedalPos.y, null);
-		
+
 		// instrument number and octave number
 		g.setFont(LayoutConstant.instrumentNumberFont);
 		g.setColor(LayoutConstant.instrumentNumberColor);
@@ -398,9 +377,7 @@ public class Piano extends JPanel {
 		public void keyPressed(KeyEvent e) {
 			int keyCode = e.getKeyCode();
 			
-			if (keyCode == LayoutConstant.pedalKey) {
-				pedal.setDown(true);
-			} else if (keyCode == KeyEvent.VK_LEFT) { // instrument --
+			if (keyCode == KeyEvent.VK_LEFT) { // instrument --
 				MusicManager.getInstance().decSynthInstrument();
 				repaint();
 			} else if (keyCode == KeyEvent.VK_RIGHT) { // instrument ++
@@ -427,12 +404,8 @@ public class Piano extends JPanel {
 		public void keyReleased(KeyEvent e) {
 			int keyCode = e.getKeyCode();
 
-			if (keyCode == LayoutConstant.pedalKey) {
-				pedal.setDown(false);
-			} else {
-				if (keyMap.containsKey(keyCode))
-					pianoKeys.get(keyMap.get(keyCode)).setDown(false);
-			}
+            if (keyMap.containsKey(keyCode))
+                pianoKeys.get(keyMap.get(keyCode)).setDown(false);
 		}
 	}
 	
@@ -444,14 +417,4 @@ public class Piano extends JPanel {
 			repaint();
 		}
 	}
-	
-	/**
-	 * Responds to pedal's notification to redraw. 
-	 */
-	private class PianoPedalListener implements PedalListener {
-		public void pedalNeedsRedraw(Pedal pedal) {
-			repaint();
-		}
-	}
-	
 }
