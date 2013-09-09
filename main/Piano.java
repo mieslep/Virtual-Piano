@@ -26,13 +26,13 @@ import resource.LayoutConstant;
  */
 public class Piano extends JPanel {
 
-	private static final int NUM_OCTAVES = 3;
+	private static final int NUM_OCTAVES = 1;
 	private static final int NUM_KEYS = MusicalNote.OCTAVE_PITCH_DELTA * Piano.NUM_OCTAVES + 1;
 	private static final int NUM_KEYS_PER_OCTAVE = 12;
 	private static final int KEY_NOT_FOUND = -1;
 
 	// Default base pitch (lowest playable C)
-	private static final int DEFAULT_BASE_PITCH = 48;
+	private static final int DEFAULT_BASE_PITCH = 35;
 	private static final int MIN_BASE_PITCH = 0;
 	private static final int MAX_BASE_PITCH = 216;
 
@@ -41,8 +41,7 @@ public class Piano extends JPanel {
 	// of the Piano JPanel
 	private int width;
 	private int height;
-	private Point pedalPos;
-	
+
 	private int currentHovered = KEY_NOT_FOUND;
 	
 	private int basePitch = DEFAULT_BASE_PITCH;
@@ -74,40 +73,24 @@ public class Piano extends JPanel {
 	 */
 	private void initKeyMap() {
 		keyMap = new HashMap<Integer, Integer>();
-		keyMap.put(KeyEvent.VK_Z, 12 * 0 + 0); // C4
-		keyMap.put(KeyEvent.VK_S, 12 * 0 + 1);
-		keyMap.put(KeyEvent.VK_X, 12 * 0 + 2);
-		keyMap.put(KeyEvent.VK_D, 12 * 0 + 3);
-		keyMap.put(KeyEvent.VK_C, 12 * 0 + 4);
-		keyMap.put(KeyEvent.VK_V, 12 * 0 + 5);
-		keyMap.put(KeyEvent.VK_G, 12 * 0 + 6);
-		keyMap.put(KeyEvent.VK_B, 12 * 0 + 7);    
-		keyMap.put(KeyEvent.VK_H, 12 * 0 + 8);
-		keyMap.put(KeyEvent.VK_N, 12 * 0 + 9);
-		keyMap.put(KeyEvent.VK_J, 12 * 0 + 10);
-		keyMap.put(KeyEvent.VK_M, 12 * 0 + 11);
-		keyMap.put(KeyEvent.VK_Q, 12 * 1 + 0); // C5
-		keyMap.put(KeyEvent.VK_2, 12 * 1 + 1);
-		keyMap.put(KeyEvent.VK_W, 12 * 1 + 2);
-		keyMap.put(KeyEvent.VK_3, 12 * 1 + 3);
-		keyMap.put(KeyEvent.VK_E, 12 * 1 + 4);
-		keyMap.put(KeyEvent.VK_R, 12 * 1 + 5);
-		keyMap.put(KeyEvent.VK_5, 12 * 1 + 6);
-		keyMap.put(KeyEvent.VK_T, 12 * 1 + 7);
-		keyMap.put(KeyEvent.VK_6, 12 * 1 + 8);
-		keyMap.put(KeyEvent.VK_Y, 12 * 1 + 9);
-		keyMap.put(KeyEvent.VK_7, 12 * 1 + 10);
-		keyMap.put(KeyEvent.VK_U, 12 * 1 + 11);
-		keyMap.put(KeyEvent.VK_I, 12 * 2 + 0); // C6
-		keyMap.put(KeyEvent.VK_9, 12 * 2 + 1);
-		keyMap.put(KeyEvent.VK_O, 12 * 2 + 2);
-		keyMap.put(KeyEvent.VK_0, 12 * 2 + 3);
-		keyMap.put(KeyEvent.VK_P, 12 * 2 + 4);
-		keyMap.put(KeyEvent.VK_OPEN_BRACKET, 12 * 2 + 5);
-		keyMap.put(KeyEvent.VK_EQUALS, 12 * 2 + 6);
-		keyMap.put(KeyEvent.VK_CLOSE_BRACKET, 12 * 2 + 7);
-		keyMap.put(KeyEvent.VK_BACK_SPACE, 12 * 2 + 8);
-		keyMap.put(KeyEvent.VK_BACK_SLASH, 12 * 2 + 9);
+		keyMap.put(KeyEvent.VK_A, 12 * 0 + 0); // C3
+		keyMap.put(KeyEvent.VK_W, 12 * 0 + 1);
+		keyMap.put(KeyEvent.VK_S, 12 * 0 + 2);
+		keyMap.put(KeyEvent.VK_E, 12 * 0 + 3);
+		keyMap.put(KeyEvent.VK_D, 12 * 0 + 4);
+		keyMap.put(KeyEvent.VK_F, 12 * 0 + 5);
+		keyMap.put(KeyEvent.VK_T, 12 * 0 + 6);
+		keyMap.put(KeyEvent.VK_G, 12 * 0 + 7);
+		keyMap.put(KeyEvent.VK_Y, 12 * 0 + 8);
+		keyMap.put(KeyEvent.VK_H, 12 * 0 + 9);
+		keyMap.put(KeyEvent.VK_U, 12 * 0 + 10);
+		keyMap.put(KeyEvent.VK_J, 12 * 0 + 11);
+		keyMap.put(KeyEvent.VK_K, 12 * 1 + 0); // C4
+        keyMap.put(KeyEvent.VK_O, 12 * 1 + 1);
+        keyMap.put(KeyEvent.VK_L, 12 * 1 + 2);
+        keyMap.put(KeyEvent.VK_P, 12 * 1 + 3);
+        keyMap.put(KeyEvent.VK_SEMICOLON, 12 * 1 + 4);
+        keyMap.put(KeyEvent.VK_QUOTE, 12 * 1 + 5);
 	}
 	
 	/**
@@ -121,7 +104,7 @@ public class Piano extends JPanel {
 		int pianoKeyCurLeft = LayoutConstant.pianoKeyLeft;
 		
 		// creates the PianoKey's and position them correctly
-		for (int i = 0; i < Piano.NUM_KEYS; i++) {
+		for (int i = 0; i < 18; i++) {
 			PianoKey pianoKey = new PianoKey(this, i);
 			
 			// position it
@@ -377,29 +360,11 @@ public class Piano extends JPanel {
 		public void keyPressed(KeyEvent e) {
 			int keyCode = e.getKeyCode();
 			
-			if (keyCode == KeyEvent.VK_LEFT) { // instrument --
-				MusicManager.getInstance().decSynthInstrument();
-				repaint();
-			} else if (keyCode == KeyEvent.VK_RIGHT) { // instrument ++
-				MusicManager.getInstance().incSynthInstrument();
-				repaint();
-			} else if (keyCode == KeyEvent.VK_PAGE_UP) { // octave ++
-				reset();
-				incOctave();
-				repaint();
-			} else if (keyCode == KeyEvent.VK_PAGE_DOWN) { // octave --
-				reset();
-				decOctave();
-				repaint();
-			} else if (keyCode == KeyEvent.VK_ENTER) { // reset
-				reset();
-				repaint();
-			} else {
-				if (keyMap.containsKey(keyCode))
+            if (keyMap.containsKey(keyCode)) {
 					pianoKeys.get(keyMap.get(keyCode)).setDown(true);
 			}
 		}
-		
+
 		@Override
 		public void keyReleased(KeyEvent e) {
 			int keyCode = e.getKeyCode();
@@ -408,9 +373,9 @@ public class Piano extends JPanel {
                 pianoKeys.get(keyMap.get(keyCode)).setDown(false);
 		}
 	}
-	
+
 	/**
-	 * Responds to piano key's notification to redraw. 
+	 * Responds to piano key's notification to redraw.
 	 */
 	private class PianoPianoKeyListener implements PianoKeyListener {
 		public void pianoKeyNeedsRedraw(PianoKey pianoKey) {
